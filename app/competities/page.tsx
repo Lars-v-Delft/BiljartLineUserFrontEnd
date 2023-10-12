@@ -1,11 +1,29 @@
-
-async function GetCompetitionsByFederationId() {
-    return (await fetch('http://localhost:8080/competition/byFederation?id=1')).json()
+type competitie = {
+    id: number,
+    federationId: number,
+    name: string,
+    gameType: string,
+    startDate: Date,
+    endDate: Date,
 }
 
-export default async function test() {
-    const res = await GetCompetitionsByFederationId();
-    //{res.content}
-    return <h1>asefaf</h1>
+import { getCompetitionsByFederationId } from '../services/competitions';
+
+export default async function CompetitiesPage() {
+    const comps = await getCompetitionsByFederationId()
+    console.log(comps)
+    return (
+        <div>
+            {
+                comps.map(function (comp: competitie) {
+                    return (
+                        <p key={comp.id}>
+                            {comp.name}
+                        </p>
+                    )
+                })
+            }
+        </div>
+    );
 }
 
