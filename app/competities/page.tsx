@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import { getCompetitionsByFederationId } from '../services/competitions';
+
 type competitie = {
     id: number,
     federationId: number,
@@ -7,23 +10,21 @@ type competitie = {
     endDate: Date,
 }
 
-import { getCompetitionsByFederationId } from '../services/competitions';
-
-export default async function CompetitiesPage() {
+export default async function FederationCompetitions() {
     const comps = await getCompetitionsByFederationId()
     console.log(comps)
     return (
-        <div>
+        <ul>
             {
                 comps.map(function (comp: competitie) {
                     return (
-                        <p key={comp.id}>
-                            {comp.name}
-                        </p>
+                        <li>
+                            <Link href={`/competities/${comp.id}`}>{comp.name}</Link>
+                        </li>
                     )
                 })
             }
-        </div>
+        </ul>
     );
 }
 
