@@ -32,8 +32,8 @@ export async function getCompetition(id: number): Promise<competition> {
         const rawData = await response.json();
 
         const competition: competition = mapCompetitionFromRawData(rawData);
-        await delay(5000);
-        // throw new Error(`show stijn`)
+        await delay(3000);
+        throw new Error(`show stijn`)
         return competition;
     } catch (error: any) {
         throw new Error(`An error occurred while fething competition: ${error.message}`)

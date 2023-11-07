@@ -9,6 +9,7 @@ export async function getTeamsByCompetition(id: number): Promise<team[]> {
         }
         const teams: team[] = await response.json()
         await delay(5000);
+        // throw new Error('demonstratie')
         return teams;
     } catch (error: any) {
         throw new Error(`An error occurred while fething teams: ${error.message}`)
