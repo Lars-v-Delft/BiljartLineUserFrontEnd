@@ -1,11 +1,13 @@
 'use client'
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useEffect } from 'react';
 import { editTeam } from '../services/teams';
+import { getPlayers } from '../services/players';
 
 export default function EditTeam({ team }: { team: team }) {
     const [teamData, setTeamData] = useState<team>({
         id: team.id,
         competitionId: team.competitionId,
+        playerIds: team.playerIds,
         name: team.name,
         homeGameDay: team.homeGameDay,
         timesViewed: team.timesViewed,
@@ -14,12 +16,38 @@ export default function EditTeam({ team }: { team: team }) {
     const [successMessage, setSuccessMessage] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
 
+    const [players, setPlayers] = useState<player[]>([]);
+
+    useEffect(() => {
+        async function getData() {
+            try {
+                setPlayers(await getPlayers());
+            } catch {
+                setSuccessMessage('');
+                setErrorMessage('Error bij laden van spelers');
+            }
+        }
+        getData();
+    }, []);
+
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setTeamData({
-            ...teamData,
-            [name]: value,
-        });
+
+        if (name === "playerIds") {
+            const selectedOptions = Array.from(
+                (e.target as HTMLSelectElement).selectedOptions
+            ).map((option) => option.value);
+
+            setTeamData({
+                ...teamData,
+                [name]: selectedOptions.map(Number),
+            });
+        } else {
+            setTeamData({
+                ...teamData,
+                [name]: value,
+            });
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -92,7 +120,19 @@ export default function EditTeam({ team }: { team: team }) {
                         onChange={handleInputChange}
                     />
                 </label>
-                {/* Spelers in team */}
+                <br />
+                <label>Spelers <br />
+                    <select
+                        name="playerIds"
+                        value={teamData.playerIds.toString()}
+                        onChange={handleInputChange}
+                        multiple={true}
+                    >
+                        {players.map((player) => (
+                            <option key={player.id} value={player.id}>{player.name}</option>
+                        ))}
+                    </select>
+                </label>
                 <br />
                 <button type="submit">Aanpassen</button>
             </form>

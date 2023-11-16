@@ -36,7 +36,7 @@
     ".next/types/**/*.ts",
     "app/components/ErrorBoundary.jsx",
     "app/components/ErrorBoundary.jsx"
-  ],
+, "app/components/ChatBoxV3.jsx", "app/page.jsx", "app/components/ChatBoxV3.jsx", "app/components/ChatBoxV3.jsx"  ],
   "exclude": [
     "node_modules"
   ]

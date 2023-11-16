@@ -97,3 +97,27 @@ export async function deleteTeam(teamId: number): Promise<boolean> {
         throw new Error(`Failed to delete competion. Error: ${error.message}`)
     }
 }
+
+export async function incrementViewCount(teamId: number): Promise<number> {
+    try {
+        const response = await fetch(`${BASE_URL}/teams/${teamId}/view-count`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cache: "no-cache"
+        });
+        if (!response.ok) {
+            //temporary solution to show what wrong in the front-end
+            const errorBody = await response.json();
+            const errorDetails = Object.entries(errorBody)
+                .map(([field, errorMessage]) => `${field}: ${errorMessage}`)
+                .join('. ');
+            throw new Error(`Failed to increment viewcount of team. HTTP status: ${response.status}. Errors: ${errorDetails}`);
+        }
+        const viewCount: number = await response.json();
+        return viewCount;
+    } catch (error: any) {
+        throw new Error(`Failed to increment viewcount of team. Error: ${error.message}`)
+    }
+}

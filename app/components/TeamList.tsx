@@ -46,7 +46,7 @@ export default function TeamList({ competitionId }: { competitionId: number }) {
                 {teams.map((team, index) =>
                     <tr className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-100'} border-b`} key={team.id}>
                         <td scope="row" className="px-3 py-2 font-medium text-gray-900">
-                            <Link href="">{team.name}</Link>
+                            <Link href={`${competitionId}/teams/${team.id}`}>{team.name}</Link>
                             <Link className="px-3" href={`${competitionId}/teams/${team.id}/aanpassen`}>Aanpassen</Link>
                             <button itemID={team.id.toString()} onClick={handleRemoveItem}>Verwijder</button>
                         </td>
