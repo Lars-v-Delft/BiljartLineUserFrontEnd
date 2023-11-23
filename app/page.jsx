@@ -1,15 +1,11 @@
 import Link from 'next/link'
-import ChatComponent from './components/ChatComponent'
-import Chatbox from './components/Chatbox'
-import MyChatbox from './components/MyChatbox'
 
 export default function Home() {
   return (
     <main>
-      <Link href={`/bonden/1`}>Ga naar competetitieoverzicht</Link>
-      {/* <Chatbox /> */}
-      {/* <ChatComponent /> */}
-      {/* <MyChatbox /> */}
+      <p>Welkom op de BiljartLine website, momenteel is deze website nog in ontwikkeling</p>
+      <p>Als je de beschikbare functionaliteiten wilt verkennen, ga dan naar:</p>
+      <Link href={`/bonden/1`}>Competetitieoverzicht</Link>
     </main>
   )
 }
