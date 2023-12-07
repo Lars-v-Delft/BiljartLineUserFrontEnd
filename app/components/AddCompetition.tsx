@@ -1,6 +1,7 @@
 'use client'
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useEffect } from 'react';
 import { postCompetition } from '../services/competitions';
+import { Input, Select, SelectItem, Button } from "@nextui-org/react";
 
 export default function addCompitition({ federationId }: { federationId: number }) {
     const [competitionData, setCompetitionData] = useState<newCompetition>({
@@ -43,11 +44,77 @@ export default function addCompitition({ federationId }: { federationId: number 
         }
     };
 
+    const [name, setName] = useState<string>();
+    const [gameType, setGameType] = useState<string>();
+    const [startDate, setStartDate] = useState<Date>();
+    const [endDate, setEndDate] = useState<Date>();
+
+    useEffect(() => {
+        console.log('name: ', name);
+        console.log('gameType: ', gameType);
+        console.log('startDate: ', startDate);
+        console.log('endDate: ', endDate);
+    }, [name, gameType, startDate, endDate]);
+
     return (
         <div>
             <h1>Competitie toevoegen</h1>
             {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+            <form onSubmit={handleSubmit}>
+                <Input
+                    isDisabled
+                    type="number"
+                    label="Bondnummer"
+                    value={competitionData.federationId.toString()}
+                    className="max-w-xs"
+                />
+                <Input
+                    // minLength={5}
+                    // maxLength={50}
+                    // errorMessage="Minimaal 5 en maximaal 50 karakters"
+                    isRequired
+                    type="text"
+                    label="Naam"
+                    onValueChange={setName}
+                    className="max-w-xs" />
+                <Select
+                    isRequired
+                    label="Spelvorm"
+                    placeholder="Selecteer een spelvorm"
+                    onChange={(e) => setGameType(e.target.value)}
+                    className="max-w-xs"
+                >
+                    <SelectItem key='STRAIGHT_RAIL' value='STRAIGHT_RAIL'> Libre</SelectItem>
+                    <SelectItem key='BALKLINE' value='BALKLINE'> Kaderspelen</SelectItem>
+                    <SelectItem key='ONE_CUSHION' value='ONE_CUSHION'> Bandstoten</SelectItem>
+                    <SelectItem key='THREE_CUSHION' value='THREE_CUSHION'> Driebanden</SelectItem>
+                </Select>
+                <Input
+                    isRequired
+                    type="date"
+                    label="Startdatum"
+                    startContent={
+                        <div className="pointer-events-none flex items-center">
+                            <span className="text-default-400 text-small"></span>
+                        </div>
+                    }
+                    onChange={(e) => setStartDate(new Date(e.target.value))}
+                    className="max-w-xs" />
+                <Input
+                    isRequired
+                    type="date"
+                    label="Einddatum"
+                    startContent={
+                        <div className="pointer-events-none flex items-center">
+                            <span className="text-default-400 text-small"></span>
+                        </div>
+                    }
+                    onChange={(e) => setEndDate(new Date(e.target.value))}
+                    className="max-w-xs" />
+                <Button type="submit" color="primary">Toevoegen</Button>
+            </form>
+            <br /><br /><br />
             <form onSubmit={handleSubmit}>
                 <label>Bondnummer:
                     <input
