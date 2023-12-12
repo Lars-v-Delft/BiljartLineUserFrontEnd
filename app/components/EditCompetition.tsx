@@ -1,6 +1,10 @@
 'use client'
 import { useState, ChangeEvent } from 'react';
 import { editCompetition } from '../services/competitions';
+import { Button, Input, Select, SelectItem } from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
+import { validCompetitionName, competition, validCompetitionEndDate } from '../types/competition';
+import { getFormattedDateString } from '../services/dateFunctions';
 
 export default function editCompitition({ competition }: { competition: competition }) {
     const [competitionData, setCompetitionData] = useState<competition>({
@@ -13,13 +17,12 @@ export default function editCompitition({ competition }: { competition: competit
         endDate: competition.endDate,
         published: competition.published,
     });
-
-    const [successMessage, setSuccessMessage] = useState<string>('');
+    const router = useRouter();
     const [errorMessage, setErrorMessage] = useState<string>('');
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        console.log(competitionData)
         const { name, value } = e.target;
-
         // Convert date input values to Date objects
         if (name === 'startDate' || name === 'endDate') {
             setCompetitionData({
@@ -32,86 +35,93 @@ export default function editCompitition({ competition }: { competition: competit
                 [name]: value,
             });
         }
+        console.log(competitionData)
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         try {
             await editCompetition(competitionData);
-            setSuccessMessage('Competitie aangepast!');
-            setErrorMessage('');
-
+            router.push('/bonden/1');
         } catch (error: any) {
-            setSuccessMessage('');
-            setErrorMessage(error.message);
+            setErrorMessage('Fout bij aanpassen van competitie');
         }
     };
 
     return (
         <div>
-            <h1>Competitie aanpassen</h1>
-            {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+            <h2 className='text-lg font-bold uppercase'>Competitie aanpassen</h2>
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
             <form onSubmit={handleSubmit}>
-                <label>Id
-                    <input
-                        type="number"
-                        name='id'
-                        value={competitionData.id}
-                        disabled
-                    />
-                </label>
-                <br />
-                <label>Bondnummer:
-                    <input
-                        type="number"
-                        name='federationId'
-                        value={competitionData.federationId}
-                        disabled
-                    />
-                </label>
-                <br />
-                <label>Naam:
-                    <input
-                        type="text"
-                        name="name"
-                        value={competitionData.name}
-                        onChange={handleInputChange}
-                    />
-                </label>
-                <br />
-                <label>Spelvorm:
-                    <select
-                        name='gameType'
-                        value={competitionData.gameType}
-                        onChange={handleInputChange}
-                    >
-                        <option value='STRAIGHT_RAIL'>Libre</option>
-                        <option value='BALKLINE'>Kaderspelen</option>
-                        <option value='ONE_CUSHION'>Bandstoten</option>
-                        <option value='THREE_CUSHION'>Driebanden</option>
-                    </select>
-                </label>
-                <br />
-                <label>Startdatum:
-                    <input
-                        type="date"
-                        name='startDate'
-                        value={competitionData.startDate.toISOString().split('T')[0]}
-                        onChange={handleInputChange}
-                    />
-                </label>
-                <br />
-                <label>Einddatum:
-                    <input
-                        type="date"
-                        name='endDate'
-                        value={competitionData.endDate.toISOString().split('T')[0]}
-                        onChange={handleInputChange}
-                    />
-                </label>
-                <br />
-                <button type="submit">Aanpassen</button>
+                <Input
+                    isDisabled
+                    type="number"
+                    label="Competitienummer"
+                    value={competitionData.id.toString()}
+                    className="max-w-xs my-2"
+                />
+                <Input
+                    isDisabled
+                    type="number"
+                    label="Bondnummer"
+                    value={competitionData.federationId.toString()}
+                    className="max-w-xs my-2"
+                />
+                <Input
+                    isRequired
+                    type="text"
+                    name='name'
+                    label="Naam"
+                    value={competitionData.name}
+                    isInvalid={!validCompetitionName(competitionData.name)}
+                    errorMessage={!validCompetitionName(competitionData.name) && "Minimaal 5 en maximaal 50 karakters"}
+                    onChange={handleInputChange}
+                    className="max-w-xs my-2" />
+                <Select
+                    isRequired
+                    name='gameType'
+                    label="Spelvorm"
+                    defaultSelectedKeys={[competitionData.gameType]}
+                    placeholder="Selecteer een spelvorm"
+                    onChange={handleInputChange}
+                    className="max-w-xs"
+                >
+                    <SelectItem key='STRAIGHT_RAIL' value='STRAIGHT_RAIL'> Libre</SelectItem>
+                    <SelectItem key='BALKLINE' value='BALKLINE'> Kaderspelen</SelectItem>
+                    <SelectItem key='ONE_CUSHION' value='ONE_CUSHION'> Bandstoten</SelectItem>
+                    <SelectItem key='THREE_CUSHION' value='THREE_CUSHION'> Driebanden</SelectItem>
+                </Select>
+                <Input
+                    isRequired
+                    type="date"
+                    name='startDate'
+                    label="Startdatum"
+                    value={getFormattedDateString(competitionData.startDate)}
+                    startContent={
+                        <div className="pointer-events-none flex items-center">
+                            <span className="text-default-400 text-small"></span>
+                        </div>
+                    }
+                    onChange={handleInputChange}
+                    className="max-w-xs my-2" />
+                <Input
+                    isRequired
+                    type="date"
+                    name='endDate'
+                    label="Einddatum"
+                    value={getFormattedDateString(competitionData.endDate)}
+                    startContent={
+                        <div className="pointer-events-none flex items-center">
+                            <span className="text-default-400 text-small"></span>
+                        </div>
+                    }
+                    isInvalid={!validCompetitionEndDate(competitionData.startDate, competitionData.endDate)}
+                    errorMessage={
+                        !validCompetitionEndDate(competitionData.startDate, competitionData.endDate)
+                        && "Einddatum kan niet voor startdatum liggen"}
+                    onChange={handleInputChange}
+                    className="max-w-xs my-2" />
+                <Button type="submit" color="primary">Aanpassen</Button>
             </form>
         </div>
     );

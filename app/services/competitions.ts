@@ -1,3 +1,4 @@
+import { competition, formattedCompetition, formattedNewCompetition, newCompetition } from "../types/competition";
 import { BASE_URL } from "./billiardsAPI";
 import { delay } from "./delayFunction";
 
