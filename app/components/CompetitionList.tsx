@@ -3,6 +3,7 @@ import { Link } from "@nextui-org/link";
 import { Button } from "@nextui-org/button";
 import { useEffect, useState } from "react";
 import { deleteCompetition } from "../services/competitions";
+import { competition } from "../types/competition";
 
 export default function CompetitionList({ comps, title }: { comps: competition[], title: string }) {
     const [competitions, setCompetitions] = useState<competition[]>([]);

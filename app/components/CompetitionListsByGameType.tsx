@@ -1,9 +1,10 @@
 'use client'
 import { useEffect, useState } from "react";
 import { getCompetitionsByFederation } from "../services/competitions";
-import { getISODate } from "../services/dateFunctions";
+import { getCurrentFormattedDateString } from "../services/dateFunctions";
 import Translate from "../services/translateFunction";
 import CompetitionList from "./CompetitionList";
+import { competition } from "../types/competition";
 
 export default function CompetitionListsByGameType({ bondId }: { bondId: number }) {
     const [comps, setComps] = useState<competition[]>([])
@@ -11,7 +12,7 @@ export default function CompetitionListsByGameType({ bondId }: { bondId: number 
 
     async function fetchData() {
         try {
-            const comps = await getCompetitionsByFederation(bondId, getISODate(-30), getISODate(60), false);
+            const comps = await getCompetitionsByFederation(bondId, getCurrentFormattedDateString(-30), getCurrentFormattedDateString(60), false);
             setComps(comps);
         } catch {
             setError(true);

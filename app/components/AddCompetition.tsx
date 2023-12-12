@@ -1,8 +1,9 @@
 'use client'
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { postCompetition } from '../services/competitions';
 import { Input, Select, SelectItem, Button } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
+import { validCompetitionEndDate, validCompetitionName, newCompetition } from '../types/competition';
 
 export default function addCompitition({ federationId }: { federationId: number }) {
     const [name, setName] = useState<string>("");
@@ -10,7 +11,6 @@ export default function addCompitition({ federationId }: { federationId: number 
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
 
-    const [successMessage, setSuccessMessage] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
 
     const router = useRouter();
@@ -28,32 +28,13 @@ export default function addCompitition({ federationId }: { federationId: number 
             await postCompetition(newCompetition);
             router.push('/bonden/1');
         } catch (error: any) {
-            setSuccessMessage('');
             setErrorMessage('Fout bij toevoegen van competitie');
         }
     };
 
-    function validName(): boolean {
-        const isValid: boolean = useMemo(() => {
-            const regexp = new RegExp('.{5,50}');
-            return regexp.test(name);
-        }, [name]);
-        console.log('name: ', isValid);
-        return isValid;
-    }
-
-    function validEndDate(): boolean {
-        const isValid: boolean = useMemo(() => {
-            return endDate >= startDate;
-        }, [endDate, startDate]);
-        console.log('end: ', isValid);
-        return isValid;
-    }
-
     return (
         <div>
             <h2 className='text-lg font-bold uppercase'>Competitie toevoegen</h2>
-            {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
             <form onSubmit={handleSubmit}>
                 <Input
@@ -67,8 +48,8 @@ export default function addCompitition({ federationId }: { federationId: number 
                     isRequired
                     type="text"
                     label="Naam"
-                    isInvalid={!validName()}
-                    errorMessage={!validName() && "Minimaal 5 en maximaal 50 karakters"}
+                    isInvalid={!validCompetitionName(name)}
+                    errorMessage={!validCompetitionName(name) && "Minimaal 5 en maximaal 50 karakters"}
                     onValueChange={setName}
                     className="max-w-xs my-2" />
                 <Select
@@ -103,8 +84,8 @@ export default function addCompitition({ federationId }: { federationId: number 
                             <span className="text-default-400 text-small"></span>
                         </div>
                     }
-                    isInvalid={!validEndDate()}
-                    errorMessage={!validEndDate() && "Einddatum kan niet voor startdatum liggen"}
+                    isInvalid={!validCompetitionEndDate(startDate, endDate)}
+                    errorMessage={!validCompetitionEndDate(startDate, endDate) && "Einddatum kan niet voor startdatum liggen"}
                     onChange={(e) => setEndDate(new Date(e.target.value))}
                     className="max-w-xs my-2" />
                 <Button type="submit" color="primary">Toevoegen</Button>
