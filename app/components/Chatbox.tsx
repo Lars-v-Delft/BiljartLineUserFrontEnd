@@ -13,12 +13,12 @@ export default function Chatbox() {
     const [message, setMessage] = useState('');
 
     stompClient.onConnect = (frame) => {
-        console.log('stompClient.onConnect')
-        setConnected(true);
         console.log('Connected: ' + frame);
+        setConnected(true);
         stompClient.subscribe('/topic/chat', (greeting) => {
             const message: message = JSON.parse(greeting.body);
             messages.push(message.sender + ': ' + message.content);
+            console.log("subscribed to /topic/chat");
         });
     };
 
@@ -32,10 +32,8 @@ export default function Chatbox() {
     };
 
     function connect() {
-        console.log("Connecting...");
         try {
             stompClient.activate();
-            console.log("stompClient.activate()");
         } catch (error) {
             console.error('Error while trying to connect:', error);
         }
@@ -47,12 +45,12 @@ export default function Chatbox() {
         console.log("Disconnected");
     }
 
-    function changeName(e: any) {
-        setName(e.target.value);
-    }
-    function changeMessage(e: any) {
-        setMessage(e.target.value);
-    }
+    // function changeName(e: any) {
+    //     setName(e.target.value);
+    // }
+    // function changeMessage(e: any) {
+    //     setMessage(e.target.value);
+    // }
     function postMessage() {
         stompClient.publish({
             destination: "/app/send",
@@ -69,7 +67,7 @@ export default function Chatbox() {
             <button disabled={connected} onClick={connect}>Join</button>
             <button disabled={!connected} onClick={disconnect} >Leave</button>
             <br />
-            <input disabled={!connected} type="text" placeholder="Jouw naam..." onChange={changeName} />
+            <input disabled={!connected} type="text" placeholder="Jouw naam..." onChange={e => setName(e.target.value)} />
             <br /> <br />
             <table hidden={!connected} >
                 <thead>
@@ -81,7 +79,7 @@ export default function Chatbox() {
                     ))}
                 </tbody>
             </table>
-            <input disabled={!connected} type="text" placeholder="Jouw bericht..." onChange={changeMessage} />
+            <input disabled={!connected} type="text" placeholder="Jouw bericht..." onChange={e => setMessage(e.target.value)} />
             <br />
             <button disabled={!connected} onClick={postMessage}>Plaats bericht</button>
         </div>
