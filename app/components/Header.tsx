@@ -1,6 +1,9 @@
+import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { options } from "../api/auth/[...nextauth]/options";
 
-export default function Header() {
+export default async function Header() {
+    const session = await getServerSession(options);
     return (
         <nav className="bg-gray-800 h-20 p-4 grid grid-cols-12 gap-4">
             <div className='col-start-2 col-span-10 flex flex-row items-center' >
@@ -25,6 +28,9 @@ export default function Header() {
                     <Link href={""}>Inloggen</Link>
                     <Link href={""}>About</Link>
                     <Link href={""}>Contact</Link>
+                    {session?.user ?
+                        <Link href={"/api/auth/signout/credentials"}>{session?.user?.name}</Link> :
+                        <Link href={"/api/auth/signin/credentials"}>Login</Link>}
                 </ul>
             </div>
         </nav>

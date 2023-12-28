@@ -1,6 +1,9 @@
+import { getServerSession } from "next-auth";
 import { competition, formattedCompetition, formattedNewCompetition, newCompetition } from "../types/competition";
 import { BASE_URL } from "./billiardsAPI";
 import { delay } from "./delayFunction";
+import { options } from "../api/auth/[...nextauth]/options";
+import { getSession } from "next-auth/react";
 
 export async function getCompetitionsByFederation(federationId: number, fromDate: string, toDate: string, publishedOnly: boolean): Promise<competition[]> {
     try {
@@ -45,12 +48,15 @@ export async function getCompetition(id: number): Promise<competition> {
 
 export async function postCompetition(newCompetition: newCompetition): Promise<competition> {
     try {
+        const session = await getSession();
+        console.log(session?.user.token);
         const formattedNewCompetition: formattedNewCompetition = mapNewCompetitionToformattedNewCompetition(newCompetition);
 
         const response = await fetch(`${BASE_URL}/competitions`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${session?.user.token}`
             },
             body: JSON.stringify(formattedNewCompetition),
             cache: "no-cache"
