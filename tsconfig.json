@@ -35,8 +35,13 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/components/ErrorBoundary.jsx",
-    "app/components/ErrorBoundary.jsx"
-, "app/components/ChatBoxV3.jsx", "app/page.jsx", "app/components/ChatBoxV3.jsx", "app/components/ChatBoxV3.jsx"  ],
+    "app/components/ErrorBoundary.jsx",
+    "app/components/ChatBoxV3.jsx",
+    "app/page.jsx",
+    "app/components/ChatBoxV3.jsx",
+    "app/components/ChatBoxV3.jsx",
+    "app/api/auth/[...nextauth]/options.js"
+  ],
   "exclude": [
     "node_modules"
   ]
