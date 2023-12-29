@@ -86,6 +86,7 @@ export async function editCompetition(competition: competition): Promise<competi
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${await getJWT()}`,
             },
             body: JSON.stringify(formattedCompetition),
             cache: "no-cache"
@@ -112,6 +113,7 @@ export async function deleteCompetition(competitionId: number): Promise<boolean>
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${await getJWT()}`,
             },
             cache: "no-cache"
         });

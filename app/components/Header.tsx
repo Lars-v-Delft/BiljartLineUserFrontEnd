@@ -1,9 +1,8 @@
 import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { options } from "../api/auth/[...nextauth]/options";
 
 export default async function Header() {
-    const session = await getServerSession(options);
+    const session = await getServerSession();
     return (
         <nav className="bg-gray-800 h-20 p-4 grid grid-cols-12 gap-4">
             <div className='col-start-2 col-span-10 flex flex-row items-center' >
@@ -25,7 +24,6 @@ export default async function Header() {
                 <ul className="text-gray-200 flex gap-4 font-semibold">
                     <Link href={"/bonden/1"}>Competities</Link>
                     <Link href={"/chat"}>Chat</Link>
-                    <Link href={""}>Inloggen</Link>
                     <Link href={""}>About</Link>
                     <Link href={""}>Contact</Link>
                     {session?.user ?

@@ -2,8 +2,10 @@
 import Link from "next/link";
 import { deleteTeam, getTeamsByCompetition } from "../services/teams";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function TeamList({ competitionId }: { competitionId: number }) {
+    const { data } = useSession();
     const [teams, setTeams] = useState<team[]>([]);
     const [error, setError] = useState('');
 
@@ -47,8 +49,10 @@ export default function TeamList({ competitionId }: { competitionId: number }) {
                     <tr className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-100'} border-b`} key={team.id}>
                         <td scope="row" className="px-3 py-2 font-medium text-gray-900">
                             <Link href={`${competitionId}/teams/${team.id}`}>{team.name}</Link>
-                            <Link className="px-3" href={`${competitionId}/teams/${team.id}/aanpassen`}>Aanpassen</Link>
-                            <button itemID={team.id.toString()} onClick={handleRemoveItem}>Verwijder</button>
+                            {data ?
+                                <> <Link className="px-3" href={`${competitionId}/teams/${team.id}/aanpassen`}>Aanpassen</Link>
+                                    <button itemID={team.id.toString()} onClick={handleRemoveItem}>Verwijder</button>
+                                </> : <></>}
                         </td>
                     </tr>
                 )}
