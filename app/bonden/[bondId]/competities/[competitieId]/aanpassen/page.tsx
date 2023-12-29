@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 export default async function editCompitition({ params }: { params: { bondId: number, competitieId: number } }) {
     const session = await getServerSession();
     if (!session)
-        redirect(`/api/auth/signin?callbackUrl=/bonden/${params.bondId}/competities/${params.competitieId}/aanpassen`);
+        redirect(`/api/auth/signin`);
 
     try {
         const competition = await getCompetition(params.competitieId);

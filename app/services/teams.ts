@@ -102,12 +102,14 @@ export async function deleteTeam(teamId: number): Promise<boolean> {
     }
 }
 
-export async function incrementViewCount(teamId: number): Promise<number> {
+// 'use client'
+export async function incrementViewCount(teamId: number, token: string): Promise<number> {
     try {
         const response = await fetch(`${BASE_URL}/teams/${teamId}/view-count`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${token}`,
             },
             cache: "no-cache"
         });

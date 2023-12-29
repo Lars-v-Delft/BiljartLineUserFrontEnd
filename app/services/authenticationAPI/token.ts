@@ -1,11 +1,11 @@
+import { options } from "@/app/api/auth/[...nextauth]/options";
+import { AuthOptions, getServerSession } from "next-auth";
 import { getSession } from "next-auth/react";
 
 export async function getJWT(): Promise<string> {
     const session = await getSession();
-    console.log(session);
     const jwt = (session as any).accessToken;
     if (jwt) {
-        console.log(jwt);
         return jwt;
     }
     else

@@ -13,7 +13,6 @@ export const options = {
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials, req) {
-                console.log("credentials", credentials)
                 if (credentials?.username == null || credentials?.password == null)
                     return null;
 
@@ -44,14 +43,30 @@ export const options = {
                 // Persist the access_token to the token right after signin
                 token.accessToken = user.token
             }
-            console.log("jwt callback", { token })
             return token
         },
         async session({ session, token }) {
             // Make accesstoken available in the session
             session.accessToken = token.accessToken
-            console.log("session callback", { session })
             return session
+        },
+        async redirect({ url, baseUrl }) {
+            console.log("redirect", '  url:', url, "  baseURL:", baseUrl)
+
+            let redirectUrl = "http://localhost:3000";
+
+            // Allows relative callback URLs
+            if (url.startsWith("/")) {
+                redirectUrl = `${baseUrl}${url}`
+            }
+            // Allows callback URLs on the same origin
+            else if (new URL(url).origin === baseUrl) {
+                redirectUrl = url
+            }
+
+            url = baseUrl;
+            console.log("RedirectURL", redirectUrl)
+            return redirectUrl;
         }
     },
     session: { strategy: "jwt" },
