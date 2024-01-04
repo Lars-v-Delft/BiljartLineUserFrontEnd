@@ -6,8 +6,10 @@ import { AuthOptions, getServerSession } from "next-auth";
 
 export default async function teamPage({ params }: { params: { teamId: number } }) {
     const session = await getServerSession(options as AuthOptions);
-    const jwt = (session as any).accessToken;
-    incrementViewCount(params.teamId, jwt);
+    if (session != null) {
+        const jwt = (session as any).accessToken;
+        incrementViewCount(params.teamId, jwt);
+    }
 
     let teamPromise = getTeam(params.teamId);
     return (
