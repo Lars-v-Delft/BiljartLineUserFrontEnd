@@ -1,3 +1,4 @@
+import { getJWT } from "./authenticationAPI/token";
 import { BASE_URL } from "./billiardsAPI"
 import { delay } from "./delayFunction";
 
@@ -35,6 +36,7 @@ export async function postTeam(newTeam: newTeam): Promise<newTeam> {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${await getJWT()}`,
             },
             body: JSON.stringify(newTeam),
             cache: "no-cache"
@@ -60,6 +62,7 @@ export async function editTeam(team: team): Promise<team> {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${await getJWT()}`,
             },
             body: JSON.stringify(team),
             cache: "no-cache"
@@ -85,6 +88,7 @@ export async function deleteTeam(teamId: number): Promise<boolean> {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${await getJWT()}`,
             },
             cache: "no-cache"
         });
@@ -98,12 +102,14 @@ export async function deleteTeam(teamId: number): Promise<boolean> {
     }
 }
 
-export async function incrementViewCount(teamId: number): Promise<number> {
+// 'use client'
+export async function incrementViewCount(teamId: number, token: string): Promise<number> {
     try {
         const response = await fetch(`${BASE_URL}/teams/${teamId}/view-count`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${token}`,
             },
             cache: "no-cache"
         });

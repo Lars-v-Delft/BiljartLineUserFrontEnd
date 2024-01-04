@@ -1,6 +1,11 @@
+import { getServerSession } from "next-auth";
 import { competition, formattedCompetition, formattedNewCompetition, newCompetition } from "../types/competition";
 import { BASE_URL } from "./billiardsAPI";
 import { delay } from "./delayFunction";
+import { options } from "../api/auth/[...nextauth]/options";
+import { getSession } from "next-auth/react";
+import { get } from "http";
+import { getJWT } from "./authenticationAPI/token";
 
 export async function getCompetitionsByFederation(federationId: number, fromDate: string, toDate: string, publishedOnly: boolean): Promise<competition[]> {
     try {
@@ -45,12 +50,14 @@ export async function getCompetition(id: number): Promise<competition> {
 
 export async function postCompetition(newCompetition: newCompetition): Promise<competition> {
     try {
+
         const formattedNewCompetition: formattedNewCompetition = mapNewCompetitionToformattedNewCompetition(newCompetition);
 
         const response = await fetch(`${BASE_URL}/competitions`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${await getJWT()}`,
             },
             body: JSON.stringify(formattedNewCompetition),
             cache: "no-cache"
@@ -79,6 +86,7 @@ export async function editCompetition(competition: competition): Promise<competi
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${await getJWT()}`,
             },
             body: JSON.stringify(formattedCompetition),
             cache: "no-cache"
@@ -105,6 +113,7 @@ export async function deleteCompetition(competitionId: number): Promise<boolean>
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${await getJWT()}`,
             },
             cache: "no-cache"
         });

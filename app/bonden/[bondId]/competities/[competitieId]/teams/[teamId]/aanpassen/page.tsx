@@ -1,7 +1,13 @@
 import EditTeam from "@/app/components/EditTeam";
 import { getTeam } from "@/app/services/teams";
+import { AuthOptions, getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-export default async function teamEditPage({ params }: { params: { teamId: number } }) {
+export default async function teamEditPage({ params }: { params: { bondId: number, competitieId: number, teamId: number } }) {
+    const session = await getServerSession();
+    if (!session)
+        redirect(`/api/auth/signin`);
+
     try {
         const team: team = await getTeam(params.teamId);
         return (

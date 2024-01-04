@@ -28,7 +28,8 @@ export default function addCompitition({ federationId }: { federationId: number 
             await postCompetition(newCompetition);
             router.push('/bonden/1');
         } catch (error: any) {
-            setErrorMessage('Fout bij toevoegen van competitie');
+            setErrorMessage(error.message);
+            // setErrorMessage('Fout bij toevoegen van competitie');
         }
     };
 
