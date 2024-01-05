@@ -21,7 +21,6 @@ export default function editCompitition({ competition }: { competition: competit
     const [errorMessage, setErrorMessage] = useState<string>('');
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        console.log(competitionData)
         const { name, value } = e.target;
         // Convert date input values to Date objects
         if (name === 'startDate' || name === 'endDate') {
@@ -35,7 +34,6 @@ export default function editCompitition({ competition }: { competition: competit
                 [name]: value,
             });
         }
-        console.log(competitionData)
     };
 
     async function handleSubmit(e: React.FormEvent) {

@@ -51,8 +51,6 @@ export const options = {
             return session
         },
         async redirect({ url, baseUrl }) {
-            console.log("redirect", '  url:', url, "  baseURL:", baseUrl)
-
             let redirectUrl = "http://localhost:3000";
 
             // Allows relative callback URLs
@@ -65,7 +63,6 @@ export const options = {
             }
 
             url = baseUrl;
-            console.log("RedirectURL", redirectUrl)
             return redirectUrl;
         }
     },
