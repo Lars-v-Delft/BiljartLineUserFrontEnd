@@ -45,19 +45,21 @@ jest.mock('next-auth/react', () => ({
 }));
 
 describe('CompetitionListsByGameType', () => {
-    it('should call competitionService like', async () => {
-        // Arrange
-        render(<CompetitionListsByGameType bondId={1} />);
+    // No longer relevant after performance improvement
+    // it('should call competitionService like', async () => {
+    //     // Arrange
+    //     render(<CompetitionListsByGameType bondId={1} />);
 
-        // Assert
-        await waitFor(() => {
-            expect(competitionService.getCompetitionsByFederation).toHaveBeenCalledTimes(1);
-            expect(competitionService.getCompetitionsByFederation).toHaveBeenCalledWith(1, expect.any(String), expect.any(String), false);
-        });
-    })
+    //     // Assert
+    //     await waitFor(() => {
+    //         expect(competitionService.getCompetitionsByFederation).toHaveBeenCalledTimes(1);
+    //         expect(competitionService.getCompetitionsByFederation).toHaveBeenCalledWith(1, expect.any(String), expect.any(String), false);
+    //     });
+    // })
     it('should have 2 gameTypes', async () => {
         // Arrange
-        render(<CompetitionListsByGameType bondId={1} />);
+        const competitionsPromise = Promise.resolve(mockCompetitions);
+        render(<CompetitionListsByGameType competitionsPromise={competitionsPromise} />);
 
         // Act
         await waitFor(() => {
@@ -68,7 +70,8 @@ describe('CompetitionListsByGameType', () => {
     })
     it('should have 3 competitions', async () => {
         // Arrange
-        render(<CompetitionListsByGameType bondId={1} />);
+        const competitionsPromise = Promise.resolve(mockCompetitions);
+        render(<CompetitionListsByGameType competitionsPromise={competitionsPromise} />);
 
         // Act
         await waitFor(() => {
