@@ -1,21 +1,17 @@
 'use client'
 import { Link } from "@nextui-org/link";
 import { Button } from "@nextui-org/button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { deleteCompetition } from "../services/competitions";
 import { competition } from "../types/competition";
 import { useSession } from "next-auth/react";
 
 export default function CompetitionList({ comps, title }: { comps: competition[], title: string }) {
     const { data } = useSession();
-    const [competitions, setCompetitions] = useState<competition[]>([]);
+    const [competitions, setCompetitions] = useState<competition[]>(comps);
 
     const [successMessage, setSuccessMessage] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
-
-    useEffect(() => {
-        setCompetitions(comps);
-    }, [])
 
     async function handleRemoveItem(itemID: number) {
         try {

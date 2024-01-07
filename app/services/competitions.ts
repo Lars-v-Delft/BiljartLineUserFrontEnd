@@ -1,10 +1,6 @@
-import { getServerSession } from "next-auth";
 import { competition, formattedCompetition, formattedNewCompetition, newCompetition } from "../types/competition";
 import { BASE_URL } from "./billiardsAPI";
 import { delay } from "./delayFunction";
-import { options } from "../api/auth/[...nextauth]/options";
-import { getSession } from "next-auth/react";
-import { get } from "http";
 import { getJWT } from "./authenticationAPI/token";
 
 export async function getCompetitionsByFederation(federationId: number, fromDate: string, toDate: string, publishedOnly: boolean): Promise<competition[]> {
