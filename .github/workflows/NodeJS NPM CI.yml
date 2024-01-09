@@ -22,7 +22,7 @@ jobs:
       # node has major releases every half year
       # even-numbered releases have 30 months maintenance
       # odd-numbered releases have short term maintenance and act as a bridge to even-numbered releases
-        node-version: [14.x, 16.x, 18.x, 20.x]
+        node-version: [16.x, 18.x, 20.x]
 
     steps:
     # checkhout must be done to work the code
