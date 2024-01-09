@@ -1,0 +1,43 @@
+name: NodeJS NPM CI
+on:
+  push:
+    branches:
+    # all pushes to known branches need to be checked
+      - dev
+      - 'feature/**'
+      - 'hotfix/**'
+  pull_request:
+    branches:
+    # only pull requests to dev and main need te be checked
+      - dev
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      # will run ci for every version
+      matrix:
+      # node has major releases every half year
+      # even-numbered releases have 30 months maintenance
+      # odd-numbered releases have short term maintenance and act as a bridge to even-numbered releases
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+    # checkhout must be done to work the code
+    - uses: actions/checkout@v3
+
+    # sets up Node.js, calls matrix for version reference
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    # must be done before running the program
+    - name: Install packages
+      # npm ci is like npm install, but with optimalizations for CI-environments
+      run: npm ci
+
+    - name: Unit test
+      run: npm test
