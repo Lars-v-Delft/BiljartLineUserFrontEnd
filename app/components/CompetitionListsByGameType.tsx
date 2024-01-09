@@ -1,35 +1,33 @@
 'use client'
 import { useEffect, useState } from "react";
-import { getCompetitionsByFederation } from "../services/competitions";
-import { getISODate } from "../services/dateFunctions";
 import Translate from "../services/translateFunction";
 import CompetitionList from "./CompetitionList";
+import { competition } from "../types/competition";
 
-export default function CompetitionListsByGameType({ bondId }: { bondId: number }) {
+export default function CompetitionListsByGameType({ competitionsPromise }: { competitionsPromise: Promise<competition[]> }) {
     const [comps, setComps] = useState<competition[]>([])
     const [error, setError] = useState(false);
 
-    async function fetchData() {
-        try {
-            const comps = await getCompetitionsByFederation(bondId, getISODate(-30), getISODate(60), false);
-            setComps(comps);
-        } catch {
-            setError(true);
-        }
-    }
-
     useEffect(() => {
+        async function fetchData() {
+            try {
+                setComps(await competitionsPromise);
+            } catch {
+                setError(true);
+            }
+        };
         fetchData();
     }, []);
 
-
-    // determine unique gameTypes in array
-    const gameTypeMap: string[] = new Array;
-    comps.forEach((comp: competition) => {
-        if (!gameTypeMap.includes(comp.gameType)) {
-            gameTypeMap.push(comp.gameType);
-        }
-    })
+    function getGameTypes(): string[] {
+        const gameTypeMap: string[] = new Array;
+        comps.forEach((comp: competition) => {
+            if (!gameTypeMap.includes(comp.gameType)) {
+                gameTypeMap.push(comp.gameType);
+            }
+        })
+        return gameTypeMap;
+    }
 
     function FilterByGameType(gameType: string) {
         return comps.filter(comp => comp.gameType == gameType);
@@ -42,7 +40,7 @@ export default function CompetitionListsByGameType({ bondId }: { bondId: number 
             <div className='flex flex-row'>
                 {
                     // add column for each gametype
-                    gameTypeMap.map(gameType =>
+                    getGameTypes().map(gameType =>
                         <div key={gameType} className="basis-1/4">
                             <CompetitionList comps={FilterByGameType(gameType)} title={Translate(gameType)} />
                         </div>

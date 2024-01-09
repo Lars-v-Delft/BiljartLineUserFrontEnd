@@ -1,21 +1,20 @@
 'use client'
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Link } from "@nextui-org/link";
+import { Button } from "@nextui-org/button";
+import { useState } from "react";
 import { deleteCompetition } from "../services/competitions";
+import { competition } from "../types/competition";
+import { useSession } from "next-auth/react";
 
 export default function CompetitionList({ comps, title }: { comps: competition[], title: string }) {
-    const [competitions, setCompetitions] = useState<competition[]>([]);
+    const { data } = useSession();
+    const [competitions, setCompetitions] = useState<competition[]>(comps);
 
     const [successMessage, setSuccessMessage] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
 
-    useEffect(() => {
-        setCompetitions(comps);
-    }, [])
-
-    async function handleRemoveItem(e: any) {
+    async function handleRemoveItem(itemID: number) {
         try {
-            const itemID = e.target.getAttribute("itemID")
             await deleteCompetition(itemID);
             setCompetitions(competitions.filter(comp => comp.id != itemID));
             setSuccessMessage('Competitie verwijderd');
@@ -34,10 +33,24 @@ export default function CompetitionList({ comps, title }: { comps: competition[]
                 {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                 {competitions.map(comp =>
                     <li key={comp.id} className="px-4 py-2 border-t border-gray-600">
-                        <Link className="text-purple-950 font-medium underline" href={`${comp.federationId}/competities/${comp.id}`}>{comp.name}</Link> <br />
-                        <p className="text-sm font-normal">{comp.startDate.toLocaleDateString()}</p>
-                        <Link href={`${comp.federationId}/competities/${comp.id}/aanpassen`}>Aanpassen</Link> <br />
-                        <button itemID={comp.id.toString()} onClick={handleRemoveItem}>Verwijder</button>
+                        <Link href={`${comp.federationId}/competities/${comp.id}`} color="primary" size="lg">{comp.name}</Link>
+                        <p className="text-sm font-normal mb-2">{comp.startDate.toLocaleDateString()}</p>
+
+                        {data ? <>
+                            <Button
+                                as={Link}
+                                href={`${comp.federationId}/competities/${comp.id}/aanpassen`}
+                                color="secondary"
+                                variant="ghost"
+                                radius='sm'
+                            >Aanpassen</Button>
+                            <Button
+                                color="danger"
+                                variant="ghost"
+                                radius='sm'
+                                onPress={() => handleRemoveItem(comp.id)}
+                            >Verwijder</Button>
+                        </> : <></>}
                     </li>
                 )}
             </ul>

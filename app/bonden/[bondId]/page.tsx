@@ -1,13 +1,27 @@
-import Link from 'next/link';
 import CompetitionListsByGameType from '@/app/components/CompetitionListsByGameType';
+import { getCompetitionsByFederation } from '@/app/services/competitions';
+import { getCurrentFormattedDateString } from '@/app/services/dateFunctions';
+import { Button } from "@nextui-org/button";
+import { Link } from "@nextui-org/link";
+import { getServerSession } from 'next-auth';
 
 export default async function FederationCompetitions({ params }: { params: { bondId: number } }) {
+    const competitionsPromise = getCompetitionsByFederation(params.bondId, getCurrentFormattedDateString(-30), getCurrentFormattedDateString(60), false);
+    const session = await getServerSession();
     return (
         <div>
-            <h1>Competities van de bond</h1>
-            <Link href={`${params.bondId}/competities/toevoegen`}>Competitie toevoegen</Link>
+            {session ?
+                <Button
+                    as={Link}
+                    href={`${params.bondId}/competities/toevoegen`}
+                    color="success"
+                    variant="ghost"
+                    radius='full'
+                    size='lg'
+                > Competitie toevoegen
+                </Button> : <></>}
             <br /> <br />
-            <CompetitionListsByGameType bondId={params.bondId} />
+            <CompetitionListsByGameType competitionsPromise={competitionsPromise} />
         </div>
     )
 }
