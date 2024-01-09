@@ -8,8 +8,9 @@ on:
       - 'hotfix/**'
   pull_request:
     branches:
-    # only pull requests to dev need te be checked
+    # only pull requests to dev and main need te be checked
       - dev
+      - main
 
 jobs:
   build:
