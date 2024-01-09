@@ -28,6 +28,15 @@ jobs:
     # checkhout must be done to work the code
     - uses: actions/checkout@v3
 
+    # caches node_modules
+    - name: Cache Node.js modules
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+          
     # sets up Node.js, calls matrix for version reference
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
