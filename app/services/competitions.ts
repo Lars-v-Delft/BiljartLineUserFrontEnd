@@ -46,7 +46,6 @@ export async function getCompetition(id: number): Promise<competition> {
 
 export async function postCompetition(newCompetition: newCompetition): Promise<competition> {
     try {
-
         const formattedNewCompetition: formattedNewCompetition = mapNewCompetitionToformattedNewCompetition(newCompetition);
 
         const response = await fetch(`${BASE_URL}/competitions`, {
