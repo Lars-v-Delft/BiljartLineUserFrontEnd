@@ -6,14 +6,12 @@ import { getJWT } from "./authenticationAPI/token";
 export async function getCompetitionsByFederation(federationId: number, fromDate: string, toDate: string, publishedOnly: boolean): Promise<competition[]> {
     try {
         const url = new URL(`${BASE_URL}/competitions/by-federation/${federationId}`);
+
         const params = new URLSearchParams();
         params.append('fromDate', fromDate);
         params.append('toDate', toDate);
         params.append('publishedOnly', publishedOnly.toString());
-
         url.search = params.toString();
-        url.search = params.toString();
-
         const response = await fetch(url.toString(), { cache: "no-cache" });
         if (!response.ok) {
             throw new Error(`Failed to fetch competitions for federation with id ${federationId}, from ${fromDate} to ${toDate}. HTTP status: ${response.status}${response.url}`)

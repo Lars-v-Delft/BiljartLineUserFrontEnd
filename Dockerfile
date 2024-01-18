@@ -1,6 +1,5 @@
-# Use an official Node.js image as the base image
-FROM node:20
-# Set the working directory inside the container
+# Build stage
+FROM node:20-alpine as build
 WORKDIR /app
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
@@ -10,7 +9,13 @@ RUN npm install
 COPY . .
 # Build the Next.js application
 RUN npm run build
-# Expose the port on which your Next.js application will run (change this if needed)
-EXPOSE 3001
-# Start the Next.js application
+
+# Final stage
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=build /app/.next /app/.next
+COPY --from=build /app/package*.json /app/
+RUN npm install --omit=dev
+# Expose the port on which your Next.js application will run
+EXPOSE 3000
 CMD ["npm", "start"]
