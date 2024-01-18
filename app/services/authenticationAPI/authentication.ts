@@ -1,10 +1,10 @@
 import { user } from "@nextui-org/theme";
-import { AUTHENTICATION_API_URL } from "./base";
+import { base_auth_url } from "./base";
 
 
 export async function login(credentials: credentials): Promise<string> {
     try {
-        const response = await fetch(`${AUTHENTICATION_API_URL}/authentication/login`, {
+        const response = await fetch(`${base_auth_url}/authentication/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
