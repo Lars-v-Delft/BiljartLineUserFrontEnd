@@ -38,17 +38,15 @@ export type formattedCompetition = {
     published: boolean
 }
 
-export function validCompetitionName(name: string): boolean {
-    const isValid: boolean = useMemo(() => {
+export function useValidCompetitionName(name: string): boolean {
+    return useMemo(() => {
         const regexp = new RegExp('.{5,50}');
         return regexp.test(name);
     }, [name]);
-    return isValid;
 }
 
-export function validCompetitionEndDate(startDate: Date, endDate: Date): boolean {
-    const isValid: boolean = useMemo(() => {
+export function useValidCompetitionEndDate(startDate: Date, endDate: Date): boolean {
+    return useMemo(() => {
         return endDate >= startDate;
     }, [endDate, startDate]);
-    return isValid;
 }

@@ -3,13 +3,16 @@ import { useState } from 'react';
 import { postCompetition } from '../services/competitions';
 import { Input, Select, SelectItem, Button } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
-import { validCompetitionEndDate, validCompetitionName, newCompetition } from '../types/competition';
+import { useValidCompetitionEndDate, useValidCompetitionName, newCompetition } from '../types/competition';
 
-export default function addCompitition({ federationId }: { federationId: number }) {
+export default function AddCompitition({ federationId }: { federationId: number }) {
     const [name, setName] = useState<string>("");
     const [gameType, setGameType] = useState<string>("STRAIGHT_RAIL");
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
+
+    const isValidCompetitionName = useValidCompetitionName(name);
+    const isValidCompetitionEndDate = useValidCompetitionEndDate(startDate, endDate);
 
     const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -49,8 +52,8 @@ export default function addCompitition({ federationId }: { federationId: number 
                     isRequired
                     type="text"
                     label="Naam"
-                    isInvalid={!validCompetitionName(name)}
-                    errorMessage={!validCompetitionName(name) && "Minimaal 5 en maximaal 50 karakters"}
+                    isInvalid={!isValidCompetitionName}
+                    errorMessage={!isValidCompetitionName && "Minimaal 5 en maximaal 50 karakters"}
                     onValueChange={setName}
                     className="max-w-xs my-2" />
                 <Select
@@ -85,8 +88,8 @@ export default function addCompitition({ federationId }: { federationId: number 
                             <span className="text-default-400 text-small"></span>
                         </div>
                     }
-                    isInvalid={!validCompetitionEndDate(startDate, endDate)}
-                    errorMessage={!validCompetitionEndDate(startDate, endDate) && "Einddatum kan niet voor startdatum liggen"}
+                    isInvalid={!isValidCompetitionEndDate}
+                    errorMessage={!isValidCompetitionEndDate && "Einddatum kan niet voor startdatum liggen"}
                     onChange={(e) => setEndDate(new Date(e.target.value))}
                     className="max-w-xs my-2" />
                 <Button type="submit" color="primary">Toevoegen</Button>
