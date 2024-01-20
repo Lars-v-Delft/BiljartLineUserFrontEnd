@@ -3,10 +3,10 @@ import { useState, ChangeEvent } from 'react';
 import { editCompetition } from '../services/competitions';
 import { Button, Input, Select, SelectItem } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
-import { validCompetitionName, competition, validCompetitionEndDate } from '../types/competition';
+import { useValidCompetitionName, competition, useValidCompetitionEndDate } from '../types/competition';
 import { getFormattedDateString } from '../services/dateFunctions';
 
-export default function editCompitition({ competition }: { competition: competition }) {
+export default function EditCompitition({ competition }: { competition: competition }) {
     const [competitionData, setCompetitionData] = useState<competition>({
         id: competition.id,
         federationId: competition.federationId,
@@ -19,6 +19,9 @@ export default function editCompitition({ competition }: { competition: competit
     });
     const router = useRouter();
     const [errorMessage, setErrorMessage] = useState<string>('');
+
+    const isValidCompetitionName = useValidCompetitionName(competitionData.name);
+    const isValidCompetitionEndDate = useValidCompetitionEndDate(competitionData.startDate, competitionData.endDate);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -71,8 +74,8 @@ export default function editCompitition({ competition }: { competition: competit
                     name='name'
                     label="Naam"
                     value={competitionData.name}
-                    isInvalid={!validCompetitionName(competitionData.name)}
-                    errorMessage={!validCompetitionName(competitionData.name) && "Minimaal 5 en maximaal 50 karakters"}
+                    isInvalid={!isValidCompetitionName}
+                    errorMessage={!isValidCompetitionName && "Minimaal 5 en maximaal 50 karakters"}
                     onChange={handleInputChange}
                     className="max-w-xs my-2" />
                 <Select
@@ -113,9 +116,9 @@ export default function editCompitition({ competition }: { competition: competit
                             <span className="text-default-400 text-small"></span>
                         </div>
                     }
-                    isInvalid={!validCompetitionEndDate(competitionData.startDate, competitionData.endDate)}
+                    isInvalid={!isValidCompetitionEndDate}
                     errorMessage={
-                        !validCompetitionEndDate(competitionData.startDate, competitionData.endDate)
+                        !isValidCompetitionEndDate
                         && "Einddatum kan niet voor startdatum liggen"}
                     onChange={handleInputChange}
                     className="max-w-xs my-2" />
