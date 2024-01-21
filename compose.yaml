@@ -1,0 +1,63 @@
+name: biljart-line
+services:
+
+  authenticationdb:
+    image: larsdelft/authenticationdb:0.1
+    ports:
+      - "3308:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=fontys
+      - MYSQL_DATABASE=biljartline_identity
+      - MYSQL_USER=librarian
+      - MYSQL_PASSWORD=god
+
+  authenticationapi:
+    image: larsdelft/authenticationapi:0.1
+    ports:
+      - "8081:8081"
+    environment:
+      - AUTHENTICATION_DB_URL=jdbc:mariadb://authenticationdb:3308/biljartline_identity
+      - AUTHENTICATION_DB_DRIVER=org.mariadb.jdbc.Driver
+      - AUTHENTICATION_DB_USERNAME=librarian
+      - AUTHENTICATION_DB_PASSWORD=god
+      - DDL_MODE=validate
+      - KEY=PhnBSsuGwqJxsdqYZTBpt5pC7fQWjB3T
+    depends_on:
+      - authenticationdb
+
+  billiardsdb:
+    image: larsdelft/billiardsdb:0.1
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=fontys
+      - MYSQL_DATABASE=billiards
+      - MYSQL_USER=biljartline
+      - MYSQL_PASSWORD=carambole
+
+  billiardsapi:
+    image: larsdelft/billiardsapi:0.1
+    ports:
+      - "8080:8080"
+    environment:
+      - AUTHENTICATION_API_URL=http://authenticationapi:8081
+      - DATABASE_URL=jdbc:mariadb://billiardsdb:3307/billiards
+      - DATABASE_DRIVER=org.mariadb.jdbc.Driver
+      - DATABASE_USERNAME=biljartline
+      - DATABASE_PASSWORD=carambole
+      - DDL_MODE=validate
+    depends_on:
+      - authenticationapi
+      - billiardsdb
+      
+  frontend:
+    image: larsdelft/biljartlinefrontend:0.2
+    ports: 
+      - "3000:3000"
+    environment:
+      - NEXTAUTH_SECRET=rX8EfmLbhh1OHZhI3h/wKoj/LLnRLi21a66bCWWq778
+      - NEXT_PUBLIC_BILLIARDS_API_URL=http://billiardsapi:8080
+      - NEXT_PUBLIC_AUTHENTICATION_API_URL=http://authenticationapi:8081
+    depends_on:
+      - billiardsapi
+      - authenticationapi
